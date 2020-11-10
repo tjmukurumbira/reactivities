@@ -11,6 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Reactivities.Data;
+using Reactivities.Data.Identity; 
+using Microsoft.EntityFrameworkCore; 
+using Microsoft.Extensions.FileProviders;
+using MediatR;
+using Reactivities.Application.Activities;
 
 namespace Reactivities.API
 {
@@ -27,11 +33,19 @@ namespace Reactivities.API
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDbContext<ReactivitiesDbContext>(x =>
+                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x => 
+            {
+                x.UseSqlite(Configuration.GetConnectionString("IdentityConnection"));
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Reactivities.API", Version = "v1" });
             });
+            services.AddMediatR(typeof(List.Handler).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -22,7 +22,10 @@ namespace Reactivities.API
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
                 try 
-                {                     
+                {     
+                    var cnt = services.GetRequiredService<ReactivitiesDbContext>();
+                    await cnt.Database.MigrateAsync();
+                    Seed.SeedData(cnt);              
 
                     var userManager = services.GetRequiredService<UserManager<AppUser>>();
                     var identityContext = services.GetRequiredService<AppIdentityDbContext>();
