@@ -32,9 +32,17 @@ namespace Reactivities.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(opt => 
+            {
+                opt.AddPolicy("CorsPolicy", builder =>{
+                    builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                });
+            });
 
             services.AddDbContext<ReactivitiesDbContext>(x =>
-                x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                {
+                    x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+                });
 
             services.AddDbContext<AppIdentityDbContext>(x => 
             {
@@ -57,7 +65,7 @@ namespace Reactivities.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Reactivities.API v1"));
             }
-
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();
