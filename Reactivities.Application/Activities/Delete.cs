@@ -6,37 +6,35 @@ using Reactivities.Data;
 
 namespace Reactivities.Application.Activities
 {
-    public class Delete
+    public class DeleteCommand : IRequest
     {
-        public class  Command : IRequest 
+        public Guid Id { get; set; }
+    }
+
+    public class DeleteHandler : IRequestHandler<DeleteCommand>
+    {
+        private readonly ReactivitiesDbContext context;
+
+        public DeleteHandler(ReactivitiesDbContext context)
         {
-            public Guid Id { get; set; }   
+            this.context = context;
         }
 
-        public class Handler : IRequestHandler<Command>
+        public async Task<Unit> Handle(DeleteCommand request, CancellationToken cancellationToken)
         {
-            private readonly ReactivitiesDbContext context;
+            var activity = await context.Activities.FindAsync(request.Id);
 
-            public Handler(ReactivitiesDbContext context)
-            {
-                this.context = context;
-            }
+            if (activity == null)
+                throw new Exception("Activity not found");
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
-            {   
-                var activity = await context.Activities.FindAsync(request.Id);
+            context.Remove(activity);
 
-                if (activity == null)
-                    throw new Exception("Activity not found"); 
+            var result = await context.SaveChangesAsync() > 0;
 
-                context.Remove(activity);    
+            if (result) return Unit.Value;
 
-                var result  = await context.SaveChangesAsync() > 0;
-
-                if (result)  return Unit.Value;
-                
-                throw new Exception("Problem saving changes");
-            }
+            throw new Exception("Problem saving changes");
         }
     }
+
 }

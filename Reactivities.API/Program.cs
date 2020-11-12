@@ -27,10 +27,10 @@ namespace Reactivities.API
                     await cnt.Database.MigrateAsync();
                     Seed.SeedData(cnt);              
 
-                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
-                    var identityContext = services.GetRequiredService<AppIdentityDbContext>();
-                    await identityContext.Database.MigrateAsync();
-                    await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
+                    // var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    // var identityContext = services.GetRequiredService<AppIdentityDbContext>();
+                    // await identityContext.Database.MigrateAsync();
+                    // await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
                 }
                 catch (Exception ex)
                 {

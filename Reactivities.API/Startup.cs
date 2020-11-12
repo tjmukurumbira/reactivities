@@ -53,7 +53,7 @@ namespace Reactivities.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Reactivities.API", Version = "v1" });
             });
-            services.AddMediatR(typeof(List.Handler).Assembly);
+            services.AddMediatR(typeof(ListHandler).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

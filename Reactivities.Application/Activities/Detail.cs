@@ -1,4 +1,4 @@
-using System; 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -7,28 +7,26 @@ using Reactivities.Data;
 
 namespace Reactivities.Application.Activities
 {
-    public class Detail
+    public class DetailQuery : IRequest<Activity>
     {
-        public class  Query : IRequest<Activity>
+        public Guid Id { get; set; }
+    }
+    public class DetailHandler : IRequestHandler<DetailQuery, Activity>
+    {
+        private readonly ReactivitiesDbContext context;
+
+        public DetailHandler(ReactivitiesDbContext context)
         {
-            public Guid Id { get; set; }   
+            this.context = context;
         }
-        public class Handler : IRequestHandler<Query, Activity>
+
+        public async Task<Activity> Handle(DetailQuery request, CancellationToken cancellationToken)
         {
-            private readonly ReactivitiesDbContext context;
-
-            public Handler(ReactivitiesDbContext context)
-            {
-                this.context = context;
-            }
-
-            public async  Task<Activity> Handle(Query request, CancellationToken cancellationToken)
-            {
-                var activity = await context.Activities.FindAsync(request.Id);
-                return activity;
-            }
+            var activity = await context.Activities.FindAsync(request.Id);
+            return activity;
         }
     }
 
-   
+
+
 }
